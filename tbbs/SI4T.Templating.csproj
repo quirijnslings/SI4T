@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SI4T.Templating</RootNamespace>
     <AssemblyName>SI4T.Templating</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -39,25 +39,44 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tridion.Common">
-      <HintPath>..\_references\cm-9.0\Tridion.Common.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Tridion.Common, Version=9.5.0.0, Culture=neutral, PublicKeyToken=349a39f202fa9b53, processorArchitecture=MSIL">
+      <HintPath>packages\SDLTridionSites9.5-CM.9.5.1\lib\Tridion.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Tridion.ContentManager">
-      <HintPath>..\_references\cm-9.0\Tridion.ContentManager.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Tridion.ContentManager, Version=9.5.0.0, Culture=neutral, PublicKeyToken=360aac4d3354074b, processorArchitecture=MSIL">
+      <HintPath>packages\SDLTridionSites9.5-CM.9.5.1\lib\Tridion.ContentManager.dll</HintPath>
     </Reference>
-    <Reference Include="Tridion.ContentManager.Common">
-      <HintPath>..\_references\cm-9.0\Tridion.ContentManager.Common.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Tridion.ContentManager.Common, Version=9.5.0.0, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+      <HintPath>packages\SDLTridionSites9.5-CM.9.5.1\lib\Tridion.ContentManager.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Tridion.ContentManager.Publishing">
-      <HintPath>..\_references\cm-9.0\Tridion.ContentManager.Publishing.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Tridion.ContentManager.Publishing, Version=9.5.0.0, Culture=neutral, PublicKeyToken=360aac4d3354074b, processorArchitecture=MSIL">
+      <HintPath>packages\SDLTridionSites9.5-CM.9.5.1\lib\Tridion.ContentManager.Publishing.dll</HintPath>
     </Reference>
-    <Reference Include="Tridion.ContentManager.Templating">
-      <HintPath>..\_references\cm-9.0\Tridion.ContentManager.Templating.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Tridion.ContentManager.Queuing, Version=9.5.0.0, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+      <HintPath>packages\SDLTridionSites9.5-CM.9.5.1\lib\Tridion.ContentManager.Queuing.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.ContentManager.TemplateTypes, Version=9.5.0.0, Culture=neutral, PublicKeyToken=360aac4d3354074b, processorArchitecture=MSIL">
+      <HintPath>packages\SDLTridionSites9.5-CM.9.5.1\lib\Tridion.ContentManager.TemplateTypes.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.ContentManager.Templating, Version=9.5.0.0, Culture=neutral, PublicKeyToken=360aac4d3354074b, processorArchitecture=MSIL">
+      <HintPath>packages\SDLTridionSites9.5-CM.9.5.1\lib\Tridion.ContentManager.Templating.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.ContentManager.TypeRegistration, Version=9.5.0.0, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+      <HintPath>packages\SDLTridionSites9.5-CM.9.5.1\lib\Tridion.ContentManager.TypeRegistration.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.ExternalContentLibrary, Version=9.5.0.0, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+      <HintPath>packages\SDLTridionSites9.5-CM.9.5.1\lib\Tridion.ExternalContentLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.ExternalContentLibrary.Contract.V3, Version=9.5.0.0, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+      <HintPath>packages\SDLTridionSites9.5-CM.9.5.1\lib\Tridion.ExternalContentLibrary.Contract.V3.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.ExternalContentLibrary.Provider.V3.Base, Version=9.5.0.0, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+      <HintPath>packages\SDLTridionSites9.5-CM.9.5.1\lib\Tridion.ExternalContentLibrary.Provider.V3.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.ExternalContentLibrary.V2, Version=1.1.0.90, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+      <HintPath>packages\SDLTridionSites9.5-CM.9.5.1\lib\Tridion.ExternalContentLibrary.V2.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.Logging, Version=9.5.0.0, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+      <HintPath>packages\SDLTridionSites9.5-CM.9.5.1\lib\Tridion.Logging.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +95,9 @@
     <EmbeddedResource Include="xsd\Search Indexing TBB Parameters.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
