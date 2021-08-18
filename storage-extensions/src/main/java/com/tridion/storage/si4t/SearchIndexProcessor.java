@@ -44,7 +44,7 @@ public final class SearchIndexProcessor {
 	private static final String INDEXER_CLASS_ATTRIBUTE = "Class";
 	private static final Logger LOG = LoggerFactory.getLogger(SearchIndexProcessor.class);
 	// Stores 1 SearchIndex handler per storage ID.
-	private static final ConcurrentHashMap<String, SearchIndex> INDEXER_HANDLERS = new ConcurrentHashMap<String, SearchIndex>();
+	private static final ConcurrentHashMap<String, Class<SearchIndex>> INDEXER_HANDLER_CLASSES = new ConcurrentHashMap<String, Class<SearchIndex>>();
 	private static final ConcurrentHashMap<String, Configuration> INDEXER_CONFIGURATION = new ConcurrentHashMap<String, Configuration>();
 	private static final ConcurrentHashMap<String, ConcurrentHashMap<String, BaseIndexData>> NOTIFICATION_REGISTER = new ConcurrentHashMap<String, ConcurrentHashMap<String, BaseIndexData>>();
 
@@ -104,36 +104,32 @@ public final class SearchIndexProcessor {
 	 * @throws ConfigurationException
 	 */
 	private void loadIndexer (String storageId, String searchIndexImplementation, Configuration indexerConfiguration) throws ConfigurationException {
-		if (INDEXER_HANDLERS.get(storageId) == null) {
+		if (INDEXER_HANDLER_CLASSES.get(storageId) == null) {
 			LOG.info("Loading " + searchIndexImplementation);
 
 			ClassLoader classLoader = this.getClass().getClassLoader();
-			Class<?> indexerClass;
+			Class<SearchIndex> indexerClass;
 			SearchIndex searchIndex;
 			try {
-				indexerClass = classLoader.loadClass(searchIndexImplementation);
-				searchIndex = (SearchIndex) indexerClass.newInstance();
-				searchIndex.configure(indexerConfiguration);
-				LOG.info("Configured: " + searchIndexImplementation);
-
-				// is probably useless code.
-				if (INDEXER_HANDLERS.containsKey(storageId)) {
-					LOG.warn("This storage instance already has a configured and loaded Search Index client. Probably storage configuration is wrong.");
-					LOG.warn("Reloading search index instance");
-					INDEXER_HANDLERS.remove(storageId);
-				}
-				INDEXER_HANDLERS.put(storageId, searchIndex);
+				indexerClass = (Class<SearchIndex>)classLoader.loadClass(searchIndexImplementation);
+				INDEXER_HANDLER_CLASSES.put(storageId, indexerClass);
 				LOG.info("Loaded: " + searchIndexImplementation);
 			} catch (ClassNotFoundException e) {
 				LOG.error(e.getLocalizedMessage(),e);
 				throw new ConfigurationException("Could not find class: " + searchIndexImplementation, e);
-			} catch (InstantiationException e) {
-				LOG.error(e.getLocalizedMessage(),e);
-				throw new ConfigurationException("Could instantiate class: " + searchIndexImplementation, e);
-			} catch (IllegalAccessException e) {
-				LOG.error(e.getLocalizedMessage(),e);
-				throw new ConfigurationException("IllegalAccessException: " + searchIndexImplementation, e);
 			}
+		}
+	}
+	private SearchIndex getSearchIndex(String storageId) throws IndexingException {
+		Class<SearchIndex> searchIndexerClass =  INDEXER_HANDLER_CLASSES.get(storageId);
+		SearchIndex searchIndexer = null;
+		try {
+			searchIndexer = (SearchIndex) searchIndexerClass.newInstance();
+			searchIndexer.configure(INDEXER_CONFIGURATION.get(storageId));
+			return searchIndexer;
+		} catch (ConfigurationException | InstantiationException | IllegalAccessException e) {
+			LOG.error(e.getLocalizedMessage(),e);
+			throw new IndexingException("Could not load SearchIndexer. Check your configuration.", e);
 		}
 	}
 
@@ -217,10 +213,11 @@ public final class SearchIndexProcessor {
 				if (data.getStorageId().equalsIgnoreCase(storageId)) {
 					LOG.trace("Data is: " + data.toString());
 					LOG.debug("Obtaining SearchIndex class for: " + data.getStorageId());
-					SearchIndex searchIndexer = INDEXER_HANDLERS.get(data.getStorageId());
+					SearchIndex searchIndexer = getSearchIndex(data.getStorageId());
 					if (searchIndexer == null) {
 						throw new IndexingException("Could not load SearchIndexer. Check your configuration.");
 					}
+
 					LOG.debug(data.getStorageId() + "::" + searchIndexer.getClass().getName() + "::" + INDEXER_CONFIGURATION.get(data.getStorageId()).toString());
 					try {
 						processAction(searchIndexer, indexableItems, itemId);
@@ -323,11 +320,13 @@ public final class SearchIndexProcessor {
 	}
 
 	public void shutDownFactory (String storageId) {
-		if (!INDEXER_HANDLERS.isEmpty()) {
+		if (!INDEXER_HANDLER_CLASSES.isEmpty()) {
 			LOG.info("Destroying indexer instance for: " + storageId);
-			SearchIndex s = INDEXER_HANDLERS.get(storageId);
-			if (s != null) {
+			try {
+				SearchIndex s = getSearchIndex(storageId);
 				s.destroy();
+			} catch (IndexingException e) {
+				LOG.error("caught indexing exception when retrieving searchIndex for storageId " + storageId);
 			}
 		}
 	}
@@ -351,8 +350,8 @@ public final class SearchIndexProcessor {
 	 */
 	public void logSearchIndexInstances () {
 		if (LOG.isTraceEnabled()) {
-			for (Entry<String, SearchIndex> e : INDEXER_HANDLERS.entrySet()) {
-				LOG.trace(e.getKey() + "::" + e.getValue().getClass().getName());
+			for (Entry<String, Class<SearchIndex>> e : INDEXER_HANDLER_CLASSES.entrySet()) {
+				LOG.trace(e.getKey() + "::" + e.getValue().getName());
 			}
 		}
 	}
