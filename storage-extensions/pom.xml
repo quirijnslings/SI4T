@@ -236,7 +236,7 @@
             </activation>
             <properties>
                 <tridion.version>[11.5.0,11.5.1)</tridion.version>
-                <spring.version>4.3.3.RELEASE</spring.version>
+                <spring.version>5.1.15.RELEASE</spring.version>
             </properties>
             <build>
                 <plugins>

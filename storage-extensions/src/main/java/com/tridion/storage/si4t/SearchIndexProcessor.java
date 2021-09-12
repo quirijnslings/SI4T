@@ -124,8 +124,11 @@ public final class SearchIndexProcessor {
 		Class<SearchIndex> searchIndexerClass =  INDEXER_HANDLER_CLASSES.get(storageId);
 		SearchIndex searchIndexer = null;
 		try {
+			LOG.debug("Instantiating search indexer with class " + searchIndexerClass.getName());
 			searchIndexer = (SearchIndex) searchIndexerClass.newInstance();
+			LOG.debug("Configuring search indexer");
 			searchIndexer.configure(INDEXER_CONFIGURATION.get(storageId));
+			LOG.debug("Search indexer is ready for use");
 			return searchIndexer;
 		} catch (ConfigurationException | InstantiationException | IllegalAccessException e) {
 			LOG.error(e.getLocalizedMessage(),e);
